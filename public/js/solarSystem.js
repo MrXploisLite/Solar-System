@@ -251,7 +251,7 @@ export class SolarSystem {
         this.addEarthClouds(planet, data.radius);
         this.addMoon(planet);
       }
-      
+
       // Add moons for other planets
       if (MOONS_DATA[name]) {
         this.addMoons(planet, name, MOONS_DATA[name]);
@@ -403,12 +403,12 @@ export class SolarSystem {
     planet.add(moon);
     planet.userData.moon = moon;
   }
-  
+
   addMoons(planet, planetName, moonsData) {
     if (!planet.userData.moons) {
       planet.userData.moons = [];
     }
-    
+
     moonsData.forEach(moonData => {
       const moonGeometry = new THREE.SphereGeometry(moonData.radius, 32, 32);
       const moonMaterial = new THREE.MeshStandardMaterial({
@@ -416,7 +416,7 @@ export class SolarSystem {
         roughness: 0.9,
         metalness: 0.1
       });
-      
+
       const moon = new THREE.Mesh(moonGeometry, moonMaterial);
       moon.userData = {
         name: moonData.name,
@@ -426,7 +426,7 @@ export class SolarSystem {
         speed: moonData.speed,
         angle: Math.random() * Math.PI * 2
       };
-      
+
       planet.add(moon);
       planet.userData.moons.push(moon);
     });
@@ -654,7 +654,7 @@ export class SolarSystem {
         'Oberon': "Oberon is heavily cratered and may have a subsurface ocean!",
         'Triton': "Triton orbits Neptune backwards (retrograde) and has nitrogen geysers!"
       };
-      
+
       infoDiv.innerHTML = `
         <div class="planet-header">
           <strong style="font-size: 18px; color: #AAA;">🌙 ${data.name.toUpperCase()}</strong>
@@ -680,7 +680,7 @@ export class SolarSystem {
       `;
       return;
     }
-    
+
     // Handle dwarf planets
     if (data.type === 'dwarf') {
       const dwarfFacts = {
@@ -915,13 +915,13 @@ export class SolarSystem {
       if (planet.mesh.userData.moon) {
         planet.mesh.userData.moon.rotation.y += delta * 2;
       }
-      
+
       // Animate other moons
       if (planet.mesh.userData.moons) {
         planet.mesh.userData.moons.forEach(moon => {
           const moonData = moon.userData;
           moonData.angle += moonData.speed * delta * 0.1;
-          
+
           const x = Math.cos(moonData.angle) * moonData.distance;
           const z = Math.sin(moonData.angle) * moonData.distance;
           moon.position.set(x, 0, z);

@@ -6,6 +6,9 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { SolarSystem } from './solarSystem.js';
 import { NewsManager } from './newsManager.js';
 import { SaveManager } from './saveManager.js';
+import { InfoPanelManager } from './infoPanelManager.js';
+import { LiveDataManager } from './liveDataManager.js';
+import { LiveDataUI } from './liveDataUI.js';
 
 class App {
   constructor() {
@@ -75,13 +78,27 @@ class App {
     // Solar System
     this.solarSystem = new SolarSystem(this.scene);
     this.solarSystem.setCamera(this.camera);
+    
+    // Info Panel Manager
+    this.infoPanelManager = new InfoPanelManager();
+    
     this.solarSystem.onPlanetClick = (planetName, planetMesh) => {
       this.flyToPlanet(planetName, planetMesh);
+      // Show educational panel for major planets
+      const educationalPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+      if (educationalPlanets.includes(planetName)) {
+        this.infoPanelManager.show(planetName);
+      }
     };
 
     // News Manager
     this.newsManager = new NewsManager();
     this.newsManager.startFetching();
+    
+    // Live Data Manager (ISS, Astronauts, NEO, Space News)
+    this.liveDataManager = new LiveDataManager();
+    this.liveDataUI = new LiveDataUI(this.liveDataManager);
+    this.liveDataManager.start();
     
     // Save Manager
     this.saveManager = new SaveManager();
@@ -127,6 +144,14 @@ class App {
     const clearTrailsBtn = document.getElementById('clear-trails');
     const speedControl = document.getElementById('speed-control');
     const speedValue = document.getElementById('speed-value');
+    
+    // Panel collapse/expand
+    const togglePanelBtn = document.getElementById('toggle-panel');
+    const infoPanel = document.getElementById('info-panel');
+    togglePanelBtn.addEventListener('click', () => {
+      infoPanel.classList.toggle('collapsed');
+      togglePanelBtn.textContent = infoPanel.classList.contains('collapsed') ? '+' : '−';
+    });
 
     playPauseBtn.addEventListener('click', () => {
       this.isPaused = !this.isPaused;
@@ -164,6 +189,11 @@ class App {
         if (planet) {
           this.flyToPlanet(planetName, planet.mesh);
           this.solarSystem.showPlanetInfo(planet.mesh.userData);
+          // Show educational panel for major planets
+          const educationalPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+          if (educationalPlanets.includes(planetName)) {
+            this.infoPanelManager.show(planetName);
+          }
         }
       });
     });
@@ -418,7 +448,6 @@ class App {
       this.solarSystem.update(delta * this.timeSpeed);
       this.updateTime(delta);
     }
-    
     this.updateCameraAnimation(delta);
     this.updatePerformanceStats();
     this.controls.update();

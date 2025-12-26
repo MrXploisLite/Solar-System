@@ -138,7 +138,8 @@ export class SolarSystem {
     // Create skybox with milky way texture
     const skyGeometry = new THREE.SphereGeometry(15000, 64, 64);
     const skyMaterial = new THREE.MeshBasicMaterial({
-      map: this.textures.stars,
+      map: this.textures.stars || null,
+      color: this.textures.stars ? 0xFFFFFF : 0x000000,
       side: THREE.BackSide
     });
     const sky = new THREE.Mesh(skyGeometry, skyMaterial);

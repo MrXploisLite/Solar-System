@@ -300,7 +300,7 @@ export class ParticleSystems {
         // Create visual markers
         lagrangePoints.forEach(point => {
             const geometry = new THREE.SphereGeometry(3, 16, 16);
-            const material = new THREE.MeshBasicMaterial({
+            const material = new THREE.MeshStandardMaterial({
                 color: point.color,
                 transparent: true,
                 opacity: 0.6,

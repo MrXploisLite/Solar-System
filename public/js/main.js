@@ -4,11 +4,6 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { SolarSystem } from './solarSystem.js';
-import { NewsManager } from './newsManager.js';
-import { SaveManager } from './saveManager.js';
-import { InfoPanelManager } from './infoPanelManager.js';
-import { LiveDataManager } from './liveDataManager.js';
-import { LiveDataUI } from './liveDataUI.js';
 
 class App {
   constructor() {
@@ -33,21 +28,6 @@ class App {
       endTarget: new THREE.Vector3(),
       progress: 0,
       duration: 2.0
-    };
-    
-    // Performance monitoring
-    this.fps = 0;
-    this.frameCount = 0;
-    this.lastTime = performance.now();
-    this.fpsUpdateInterval = 1000;
-    
-    // Quality settings
-    this.qualitySettings = {
-      bloom: true,
-      trails: true,
-      atmosphere: true,
-      antialiasing: true,
-      pixelRatio: Math.min(window.devicePixelRatio, 2)
     };
 
     this.init();
@@ -79,30 +59,9 @@ class App {
     this.solarSystem = new SolarSystem(this.scene);
     this.solarSystem.setCamera(this.camera);
     
-    // Info Panel Manager
-    this.infoPanelManager = new InfoPanelManager();
-    
     this.solarSystem.onPlanetClick = (planetName, planetMesh) => {
       this.flyToPlanet(planetName, planetMesh);
-      // Show educational panel for major planets
-      const educationalPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
-      if (educationalPlanets.includes(planetName)) {
-        this.infoPanelManager.show(planetName);
-      }
     };
-
-    // News Manager
-    this.newsManager = new NewsManager();
-    this.newsManager.startFetching();
-    
-    // Live Data Manager (ISS, Astronauts, NEO, Space News)
-    this.liveDataManager = new LiveDataManager();
-    this.liveDataUI = new LiveDataUI(this.liveDataManager);
-    this.liveDataManager.start();
-    
-    // Save Manager
-    this.saveManager = new SaveManager();
-    this.loadSavedState();
 
     // UI Setup
     this.setupUI();
@@ -182,13 +141,6 @@ class App {
         this.solarSystem.clearTrails();
       });
     }
-    
-    const saveStateBtn = document.getElementById('save-state');
-    if (saveStateBtn) {
-      saveStateBtn.addEventListener('click', () => {
-        this.saveCurrentState();
-      });
-    }
 
     if (speedControl && speedValue) {
       speedControl.addEventListener('input', (e) => {
@@ -205,45 +157,9 @@ class App {
         if (planet) {
           this.flyToPlanet(planetName, planet.mesh);
           this.solarSystem.showPlanetInfo(planet.mesh.userData);
-          // Show educational panel for major planets
-          const educationalPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
-          if (educationalPlanets.includes(planetName)) {
-            this.infoPanelManager.show(planetName);
-          }
         }
       });
     });
-    
-    // Quality preset selector
-    const qualityPreset = document.getElementById('quality-preset');
-    if (qualityPreset) {
-      qualityPreset.addEventListener('change', (e) => {
-        this.setQualityPreset(e.target.value);
-      });
-    }
-    
-    // Help overlay
-    const helpButton = document.getElementById('help-button');
-    const helpOverlay = document.getElementById('help-overlay');
-    const closeHelp = document.getElementById('close-help');
-    
-    if (helpButton && helpOverlay) {
-      helpButton.addEventListener('click', () => {
-        helpOverlay.classList.toggle('hidden');
-      });
-    }
-    
-    if (closeHelp && helpOverlay) {
-      closeHelp.addEventListener('click', () => {
-        helpOverlay.classList.add('hidden');
-      });
-      
-      helpOverlay.addEventListener('click', (e) => {
-        if (e.target === helpOverlay) {
-          helpOverlay.classList.add('hidden');
-        }
-      });
-    }
     
     // Keyboard shortcuts
     window.addEventListener('keydown', (e) => {
@@ -262,16 +178,6 @@ class App {
         }
       } else if (e.key === 'c' || e.key === 'C') {
         this.solarSystem.clearTrails();
-      } else if (e.key === 'p' || e.key === 'P') {
-        const perfPanel = document.getElementById('performance-panel');
-        if (perfPanel) {
-          perfPanel.style.display = perfPanel.style.display === 'none' ? 'block' : 'none';
-        }
-      } else if (e.key === 'h' || e.key === 'H') {
-        const helpOverlay = document.getElementById('help-overlay');
-        if (helpOverlay) {
-          helpOverlay.classList.toggle('hidden');
-        }
       }
     });
   }
@@ -335,51 +241,6 @@ class App {
   easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
-  
-  saveCurrentState() {
-    const state = {
-      camera: {
-        position: this.camera.position,
-        target: this.controls.target
-      },
-      timeSpeed: this.timeSpeed,
-      isPaused: this.isPaused,
-      showTrails: this.solarSystem.showTrails,
-      quality: document.getElementById('quality-preset').value
-    };
-    
-    if (this.saveManager.saveState(state)) {
-      this.showNotification('State saved successfully!');
-    }
-  }
-  
-  loadSavedState() {
-    const saved = this.saveManager.loadState();
-    if (!saved) return;
-    
-    // Restore settings
-    if (saved.settings) {
-      this.timeSpeed = saved.settings.timeSpeed || 1;
-      this.isPaused = saved.settings.isPaused || false;
-      
-      if (saved.settings.quality) {
-        document.getElementById('quality-preset').value = saved.settings.quality;
-        this.setQualityPreset(saved.settings.quality);
-      }
-    }
-  }
-  
-  showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'save-notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.classList.add('fade-out');
-      setTimeout(() => notification.remove(), 300);
-    }, 2000);
-  }
 
   updateTime(delta) {
     if (!this.isPaused) {
@@ -388,85 +249,16 @@ class App {
       this.realTime = new Date(this.realTime.getTime() + hoursToAdd * 1000);
 
       const timeDisplay = document.getElementById('time-display');
-      timeDisplay.textContent = `TIME: ${this.realTime.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })}`;
-    }
-  }
-
-  updatePerformanceStats() {
-    this.frameCount++;
-    const currentTime = performance.now();
-    const elapsed = currentTime - this.lastTime;
-    
-    if (elapsed >= this.fpsUpdateInterval) {
-      this.fps = Math.round((this.frameCount * 1000) / elapsed);
-      this.frameCount = 0;
-      this.lastTime = currentTime;
-      
-      const fpsDisplay = document.getElementById('fps-counter');
-      if (fpsDisplay) {
-        fpsDisplay.textContent = `${this.fps} FPS`;
-        
-        // Color code based on performance
-        if (this.fps >= 50) {
-          fpsDisplay.style.color = '#4CAF50';
-        } else if (this.fps >= 30) {
-          fpsDisplay.style.color = '#FFC107';
-        } else {
-          fpsDisplay.style.color = '#F44336';
-        }
+      if (timeDisplay) {
+        timeDisplay.textContent = `TIME: ${this.realTime.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })}`;
       }
     }
-  }
-  
-  setQualityPreset(preset) {
-    switch(preset) {
-      case 'low':
-        this.qualitySettings.bloom = false;
-        this.qualitySettings.trails = false;
-        this.qualitySettings.atmosphere = false;
-        this.qualitySettings.antialiasing = false;
-        this.qualitySettings.pixelRatio = 1;
-        this.bloomPass.enabled = false;
-        this.solarSystem.showTrails = false;
-        this.solarSystem.toggleTrails();
-        break;
-      case 'medium':
-        this.qualitySettings.bloom = true;
-        this.qualitySettings.trails = true;
-        this.qualitySettings.atmosphere = false;
-        this.qualitySettings.antialiasing = true;
-        this.qualitySettings.pixelRatio = 1;
-        this.bloomPass.enabled = true;
-        this.bloomPass.strength = 0.4;
-        break;
-      case 'high':
-        this.qualitySettings.bloom = true;
-        this.qualitySettings.trails = true;
-        this.qualitySettings.atmosphere = true;
-        this.qualitySettings.antialiasing = true;
-        this.qualitySettings.pixelRatio = Math.min(window.devicePixelRatio, 2);
-        this.bloomPass.enabled = true;
-        this.bloomPass.strength = 0.6;
-        break;
-      case 'ultra':
-        this.qualitySettings.bloom = true;
-        this.qualitySettings.trails = true;
-        this.qualitySettings.atmosphere = true;
-        this.qualitySettings.antialiasing = true;
-        this.qualitySettings.pixelRatio = window.devicePixelRatio;
-        this.bloomPass.enabled = true;
-        this.bloomPass.strength = 0.8;
-        break;
-    }
-    
-    this.renderer.setPixelRatio(this.qualitySettings.pixelRatio);
-    console.log(`Quality preset set to: ${preset.toUpperCase()}`);
   }
 
   animate() {
@@ -479,7 +271,6 @@ class App {
       this.updateTime(delta);
     }
     this.updateCameraAnimation(delta);
-    this.updatePerformanceStats();
     this.controls.update();
     this.composer.render();
   }

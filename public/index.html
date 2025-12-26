@@ -30,13 +30,10 @@
   
   <div id="info-panel">
     <div class="panel-toggle">
-      <h1>NASA Solar System</h1>
+      <h1>Solar System</h1>
       <button id="toggle-panel" title="Collapse/Expand Panel">−</button>
     </div>
     <div id="time-display"></div>
-    <div id="planet-info">
-      <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Click on a planet to view detailed information</p>
-    </div>
     <div class="controls">
       <button id="play-pause">Pause Simulation</button>
       <button id="reset-view">Reset Camera</button>
@@ -44,7 +41,6 @@
         <button id="toggle-trails" style="flex: 1;">Hide Trails</button>
         <button id="clear-trails" style="flex: 1;">Clear Trails</button>
       </div>
-      <button id="save-state">💾 Save State</button>
       <label>
         <span style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500;">Simulation Speed</span>
         <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
@@ -77,79 +73,9 @@
     </div>
   </div>
   
-  <div id="news-notification" class="notification hidden"></div>
-  
-  <div id="performance-panel">
-    <div id="fps-counter">-- FPS</div>
-    <div class="quality-controls">
-      <span style="font-size: 10px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px;">Quality</span>
-      <select id="quality-preset">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high" selected>High</option>
-        <option value="ultra">Ultra</option>
-      </select>
-    </div>
-  </div>
-  
-  <button id="help-button" title="Keyboard Shortcuts (H)">?</button>
-  
-  <div id="help-overlay" class="hidden">
-    <div class="help-content">
-      <h2>Keyboard Shortcuts</h2>
-      <div class="shortcuts-grid">
-        <div class="shortcut-item">
-          <kbd>Space</kbd>
-          <span>Pause/Resume</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>R</kbd>
-          <span>Reset Camera</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>T</kbd>
-          <span>Toggle Trails</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>C</kbd>
-          <span>Clear Trails</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>P</kbd>
-          <span>Performance Panel</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>H</kbd>
-          <span>Toggle Help</span>
-        </div>
-      </div>
-      <h3>Mouse Controls</h3>
-      <div class="shortcuts-grid">
-        <div class="shortcut-item">
-          <kbd>Left Drag</kbd>
-          <span>Rotate View</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>Right Drag</kbd>
-          <span>Pan View</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>Scroll</kbd>
-          <span>Zoom In/Out</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>Click</kbd>
-          <span>Select Planet</span>
-        </div>
-      </div>
-      <button id="close-help">Close (H)</button>
-    </div>
-  </div>
-  
   <div id="credits">
-    <p style="font-weight: 600;">NASA Solar System Explorer</p>
-    <p style="font-size: 11px; opacity: 0.7;">Created by Romy Rianata</p>
-    <p style="font-size: 10px; opacity: 0.5;">Data: NASA JPL Horizons System</p>
+    <p style="font-weight: 600;">Solar System Explorer</p>
+    <p style="font-size: 10px; opacity: 0.5;">Interactive 3D Visualization</p>
   </div>
   
   <script type="importmap">

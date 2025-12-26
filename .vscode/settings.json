@@ -86,7 +86,7 @@
   "extensions.autoCheckUpdates": false,
   "extensions.closeExtensionDetailsOnViewChange": true,
   "telemetry.telemetryLevel": "off",
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "GitHub Dark Colorblind (Beta)",
   "workbench.iconTheme": "vs-seti",
   "editor.fontFamily": "Menlo, Monaco, 'Courier New', monospace",
   "editor.fontSize": 13,

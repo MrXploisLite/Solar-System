@@ -385,3 +385,240 @@ canvas {
   opacity: 1 !important;
   transform: none !important;
 }
+
+/* New feature animations */
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Theme variables support */
+:root {
+  --primary-color: #0B3D91;
+  --secondary-color: #4A90E2;
+  --background-color: #000000;
+  --panel-color: rgba(10, 15, 25, 0.95);
+  --text-color: #FFFFFF;
+  --accent-color: #FC3D21;
+  --success-color: #4ECDC4;
+  --warning-color: #FFE66D;
+  --danger-color: #F38181;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+
+  #info-panel,
+  #tour-overlay,
+  #data-viz-canvas {
+    border: 2px solid #FFFFFF !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Accessibility improvements */
+button:focus,
+input:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High DPI support for new UI elements */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+  #theme-selector-container,
+  #accessibility-controls {
+    transform: scale(1.1);
+  }
+}
+
+/* Mobile optimizations for new features */
+@media (max-width: 768px) {
+  #theme-selector-container {
+    bottom: 12px;
+    right: 12px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #accessibility-controls {
+    bottom: 12px;
+    left: 12px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #shooting-star-btn {
+    bottom: 70px;
+    right: 12px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+}
+
+/* Loading animation for new features */
+.loading-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Tooltip styles for new buttons */
+button[title] {
+  position: relative;
+}
+
+button[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 4px;
+}
+
+/* Custom scrollbar for tour selection */
+#tour-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#tour-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+#tour-list::-webkit-scrollbar-thumb {
+  background: rgba(11, 61, 145, 0.5);
+  border-radius: 3px;
+}
+
+#tour-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(11, 61, 145, 0.7);
+}
+
+/* Data visualization canvas styling */
+#data-viz-canvas {
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+}
+
+/* Theme selector card hover effects */
+#theme-grid>div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Accessibility toggle active states */
+#accessibility-toggle.active,
+#contrast-toggle.active,
+#compact-toggle.active {
+  background: rgba(74, 144, 226, 0.3);
+  border-color: #4A90E2;
+  color: #4A90E2;
+}
+
+/* Tour overlay backdrop blur support */
+@supports (backdrop-filter: blur(10px)) {
+  #tour-overlay {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* VR button hover effects */
+#vr-button:hover {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Performance indicator colors */
+.performance-good {
+  color: #38ef7d;
+}
+
+.performance-medium {
+  color: #FFE66D;
+}
+
+.performance-poor {
+  color: #F38181;
+}
+
+/* Custom theme application */
+body[data-theme="classic"] {
+  --primary-color: #0B3D91;
+}
+
+body[data-theme="nebula"] {
+  --primary-color: #7B68EE;
+}
+
+body[data-theme="sunrise"] {
+  --primary-color: #FF6B35;
+}
+
+body[data-theme="ocean"] {
+  --primary-color: #0077B6;
+}
+
+body[data-theme="matrix"] {
+  --primary-color: #00FF41;
+}
+
+body[data-theme="aurora"] {
+  --primary-color: #00F5D4;
+}
+
+body[data-theme="monochrome"] {
+  --primary-color: #FFFFFF;
+}

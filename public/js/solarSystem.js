@@ -262,6 +262,14 @@ export class SolarSystem {
         this.addMoons(planet, name, MOONS_DATA[name]);
       }
     });
+
+    // Store moon reference for Lagrange points calculation
+    if (this.planets.earth && this.planets.earth.mesh.userData.moon) {
+      this.planets.moon = {
+        mesh: this.planets.earth.mesh.userData.moon,
+        data: { name: 'moon', distance: 25, speed: 8, radius: 2.7 }
+      };
+    }
   }
 
   createPlanetMaterial(name, data) {

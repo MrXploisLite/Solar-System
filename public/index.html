@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NASA Solar System Explorer - Interactive 3D Visualization</title>
-  <meta name="description" content="Explore our solar system in stunning 3D with realistic NASA data, atmospheric effects, 8 planets, 5 dwarf planets, and real-time orbital mechanics.">
-  <meta name="keywords" content="NASA, solar system, 3D visualization, planets, space, astronomy, Three.js, WebGL, interactive">
+  <meta name="description"
+    content="Explore our solar system in stunning 3D with realistic NASA data, atmospheric effects, 8 planets, 5 dwarf planets, and real-time orbital mechanics.">
+  <meta name="keywords"
+    content="NASA, solar system, 3D visualization, planets, space, astronomy, Three.js, WebGL, interactive">
   <meta name="author" content="Romy Rianata">
   <meta name="theme-color" content="#0B3D91">
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="NASA Solar System Explorer">
-  <meta property="og:description" content="Interactive 3D solar system with realistic NASA data and stunning visual effects">
+  <meta property="og:description"
+    content="Interactive 3D solar system with realistic NASA data and stunning visual effects">
   <meta property="og:image" content="/preview.jpg">
-  
+
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NASA Solar System Explorer">
   <meta name="twitter:description" content="Explore our solar system in stunning 3D">
-  
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <div id="loading">
     <div class="loader"></div>
     <p>Loading Solar System...</p>
   </div>
-  
+
   <div id="info-panel">
     <div class="panel-toggle">
       <h1>Solar System</h1>
@@ -50,7 +55,8 @@
       </label>
     </div>
     <div class="planet-selector">
-      <span style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin-bottom: 8px;">Planets</span>
+      <span
+        style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin-bottom: 8px;">Planets</span>
       <div class="planet-buttons">
         <button class="planet-btn" data-planet="sun">Sun</button>
         <button class="planet-btn" data-planet="mercury">Mercury</button>
@@ -62,7 +68,9 @@
         <button class="planet-btn" data-planet="uranus">Uranus</button>
         <button class="planet-btn" data-planet="neptune">Neptune</button>
       </div>
-      <span style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin: 12px 0 8px 0;">Dwarf Planets</span>
+      <span
+        style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin: 12px 0 8px 0;">Dwarf
+        Planets</span>
       <div class="planet-buttons">
         <button class="planet-btn dwarf-btn" data-planet="ceres">Ceres</button>
         <button class="planet-btn dwarf-btn" data-planet="pluto">Pluto</button>
@@ -72,12 +80,12 @@
       </div>
     </div>
   </div>
-  
+
   <div id="credits">
     <p style="font-weight: 600;">Solar System Explorer</p>
     <p style="font-size: 10px; opacity: 0.5;">Interactive 3D Visualization</p>
   </div>
-  
+
   <script type="importmap">
     {
       "imports": {
@@ -87,5 +95,7 @@
     }
   </script>
   <script type="module" src="/js/main.js"></script>
+  <!-- Additional modules are loaded dynamically by main.js -->
 </body>
+
 </html>

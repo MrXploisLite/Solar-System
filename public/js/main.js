@@ -138,6 +138,7 @@ class App {
   }
 
   setupUI() {
+    // Get UI elements with error handling
     const playPauseBtn = document.getElementById('play-pause');
     const resetViewBtn = document.getElementById('reset-view');
     const toggleTrailsBtn = document.getElementById('toggle-trails');
@@ -148,38 +149,53 @@ class App {
     // Panel collapse/expand
     const togglePanelBtn = document.getElementById('toggle-panel');
     const infoPanel = document.getElementById('info-panel');
-    togglePanelBtn.addEventListener('click', () => {
-      infoPanel.classList.toggle('collapsed');
-      togglePanelBtn.textContent = infoPanel.classList.contains('collapsed') ? '+' : '−';
-    });
+    
+    if (togglePanelBtn && infoPanel) {
+      togglePanelBtn.addEventListener('click', () => {
+        infoPanel.classList.toggle('collapsed');
+        togglePanelBtn.textContent = infoPanel.classList.contains('collapsed') ? '+' : '−';
+      });
+    }
 
-    playPauseBtn.addEventListener('click', () => {
-      this.isPaused = !this.isPaused;
-      playPauseBtn.textContent = this.isPaused ? 'Play Simulation' : 'Pause Simulation';
-    });
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        this.isPaused = !this.isPaused;
+        playPauseBtn.textContent = this.isPaused ? 'Play Simulation' : 'Pause Simulation';
+      });
+    }
 
-    resetViewBtn.addEventListener('click', () => {
-      this.resetCamera();
-    });
+    if (resetViewBtn) {
+      resetViewBtn.addEventListener('click', () => {
+        this.resetCamera();
+      });
+    }
 
-    toggleTrailsBtn.addEventListener('click', () => {
-      const showing = this.solarSystem.toggleTrails();
-      toggleTrailsBtn.textContent = showing ? 'Hide Trails' : 'Show Trails';
-    });
+    if (toggleTrailsBtn) {
+      toggleTrailsBtn.addEventListener('click', () => {
+        const showing = this.solarSystem.toggleTrails();
+        toggleTrailsBtn.textContent = showing ? 'Hide Trails' : 'Show Trails';
+      });
+    }
 
-    clearTrailsBtn.addEventListener('click', () => {
-      this.solarSystem.clearTrails();
-    });
+    if (clearTrailsBtn) {
+      clearTrailsBtn.addEventListener('click', () => {
+        this.solarSystem.clearTrails();
+      });
+    }
     
     const saveStateBtn = document.getElementById('save-state');
-    saveStateBtn.addEventListener('click', () => {
-      this.saveCurrentState();
-    });
+    if (saveStateBtn) {
+      saveStateBtn.addEventListener('click', () => {
+        this.saveCurrentState();
+      });
+    }
 
-    speedControl.addEventListener('input', (e) => {
-      this.timeSpeed = parseFloat(e.target.value);
-      speedValue.textContent = `${this.timeSpeed}x`;
-    });
+    if (speedControl && speedValue) {
+      speedControl.addEventListener('input', (e) => {
+        this.timeSpeed = parseFloat(e.target.value);
+        speedValue.textContent = `${this.timeSpeed}x`;
+      });
+    }
     
     // Planet selector buttons
     document.querySelectorAll('.planet-btn').forEach(btn => {
@@ -200,28 +216,34 @@ class App {
     
     // Quality preset selector
     const qualityPreset = document.getElementById('quality-preset');
-    qualityPreset.addEventListener('change', (e) => {
-      this.setQualityPreset(e.target.value);
-    });
+    if (qualityPreset) {
+      qualityPreset.addEventListener('change', (e) => {
+        this.setQualityPreset(e.target.value);
+      });
+    }
     
     // Help overlay
     const helpButton = document.getElementById('help-button');
     const helpOverlay = document.getElementById('help-overlay');
     const closeHelp = document.getElementById('close-help');
     
-    helpButton.addEventListener('click', () => {
-      helpOverlay.classList.toggle('hidden');
-    });
+    if (helpButton && helpOverlay) {
+      helpButton.addEventListener('click', () => {
+        helpOverlay.classList.toggle('hidden');
+      });
+    }
     
-    closeHelp.addEventListener('click', () => {
-      helpOverlay.classList.add('hidden');
-    });
-    
-    helpOverlay.addEventListener('click', (e) => {
-      if (e.target === helpOverlay) {
+    if (closeHelp && helpOverlay) {
+      closeHelp.addEventListener('click', () => {
         helpOverlay.classList.add('hidden');
-      }
-    });
+      });
+      
+      helpOverlay.addEventListener('click', (e) => {
+        if (e.target === helpOverlay) {
+          helpOverlay.classList.add('hidden');
+        }
+      });
+    }
     
     // Keyboard shortcuts
     window.addEventListener('keydown', (e) => {
@@ -230,18 +252,26 @@ class App {
       } else if (e.key === ' ') {
         e.preventDefault();
         this.isPaused = !this.isPaused;
-        playPauseBtn.textContent = this.isPaused ? 'Play Simulation' : 'Pause Simulation';
+        if (playPauseBtn) {
+          playPauseBtn.textContent = this.isPaused ? 'Play Simulation' : 'Pause Simulation';
+        }
       } else if (e.key === 't' || e.key === 'T') {
         const showing = this.solarSystem.toggleTrails();
-        toggleTrailsBtn.textContent = showing ? 'Hide Trails' : 'Show Trails';
+        if (toggleTrailsBtn) {
+          toggleTrailsBtn.textContent = showing ? 'Hide Trails' : 'Show Trails';
+        }
       } else if (e.key === 'c' || e.key === 'C') {
         this.solarSystem.clearTrails();
       } else if (e.key === 'p' || e.key === 'P') {
         const perfPanel = document.getElementById('performance-panel');
-        perfPanel.style.display = perfPanel.style.display === 'none' ? 'block' : 'none';
+        if (perfPanel) {
+          perfPanel.style.display = perfPanel.style.display === 'none' ? 'block' : 'none';
+        }
       } else if (e.key === 'h' || e.key === 'H') {
         const helpOverlay = document.getElementById('help-overlay');
-        helpOverlay.classList.toggle('hidden');
+        if (helpOverlay) {
+          helpOverlay.classList.toggle('hidden');
+        }
       }
     });
   }

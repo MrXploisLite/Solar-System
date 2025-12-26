@@ -40,8 +40,15 @@ export class LiveDataManager {
 
     async fetchISSPosition() {
         try {
-            const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
-            if (!res.ok) throw new Error('ISS API failed');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544', {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error(`ISS API failed: ${res.status}`);
             const data = await res.json();
             this.issData = {
                 latitude: parseFloat(data.latitude),
@@ -53,6 +60,7 @@ export class LiveDataManager {
             this.notifyListeners('iss-position', this.issData);
             return this.issData;
         } catch (error) {
+            console.warn('ISS position fetch failed:', error.message);
             if (!this.issData) {
                 this.issData = {
                     latitude: 0,
@@ -98,8 +106,15 @@ export class LiveDataManager {
 
     async fetchSpaceNews() {
         try {
-            const res = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=10');
-            if (!res.ok) throw new Error('News API failed');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+            
+            const res = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=10', {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error(`News API failed: ${res.status}`);
             const data = await res.json();
             if (data.results && data.results.length > 0) {
                 this.spaceNews = data.results.map(article => ({
@@ -114,6 +129,7 @@ export class LiveDataManager {
                 return this.spaceNews;
             }
         } catch (error) {
+            console.warn('Space news fetch failed:', error.message);
             this.spaceNews = [
                 {
                     title: 'ISS Celebrates 27 Years of Continuous Human Presence',
@@ -138,8 +154,15 @@ export class LiveDataManager {
     async fetchNearEarthObjects() {
         try {
             const today = new Date().toISOString().split('T')[0];
-            const res = await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=DEMO_KEY`);
-            if (!res.ok) throw new Error('NEO API failed');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+            
+            const res = await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=DEMO_KEY`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error(`NEO API failed: ${res.status}`);
             const data = await res.json();
             if (data.near_earth_objects && data.near_earth_objects[today]) {
                 const objects = data.near_earth_objects[today];
@@ -163,6 +186,7 @@ export class LiveDataManager {
             }
             throw new Error('No NEO data');
         } catch (error) {
+            console.warn('NEO fetch failed:', error.message);
             this.nearEarthObjects = [
                 {
                     name: '(2024 AB1)',

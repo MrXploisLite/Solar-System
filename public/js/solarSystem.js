@@ -109,7 +109,12 @@ export class SolarSystem {
       this.loadTexture('stars', '/textures/2k_stars_milky_way.jpg')
     ];
 
-    await Promise.all(texturePromises);
+    try {
+      await Promise.all(texturePromises);
+      console.log('✅ All textures loaded successfully');
+    } catch (error) {
+      console.warn('⚠️ Some textures failed to load, using fallback colors:', error);
+    }
   }
 
   loadTexture(name, path) {
@@ -122,7 +127,7 @@ export class SolarSystem {
         },
         undefined,
         (error) => {
-          console.error(`Error loading texture ${name}:`, error);
+          console.warn(`Texture ${name} not found at ${path}, will use solid color`);
           resolve(null);
         }
       );

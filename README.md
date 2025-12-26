@@ -4,33 +4,43 @@
 [![Bun](https://img.shields.io/badge/Bun-1.3.0-000000.svg)](https://bun.sh)
 [![Three.js](https://img.shields.io/badge/Three.js-0.170.0-000000.svg)](https://threejs.org)
 [![WebGL](https://img.shields.io/badge/WebGL-2.0-990000.svg)](https://get.webgl.org/)
-[![Version](https://img.shields.io/badge/Version-2.0.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/Version-3.0.0-blue.svg)]()
 
 A production-ready, immersive 3D solar system visualization built with **Bun + Three.js**. Features NASA-accurate data, VR support, guided tours, advanced physics, and real-time space data integration.
 
-## ✨ New in v2.0 - Major Update
+## ✨ New in v3.0 - Next Generation Update
 
-### 🥽 Immersive Experiences
-- **WebXR/VR Support** - Explore the solar system in virtual reality
-- **Advanced Particle Systems** - Beautiful nebula backgrounds and comet trails
-- **Interactive Guided Tours** - Educational tours and mission simulations
-- **Data Visualization** - Real-time performance analytics and charts
+### 🚀 Advanced Performance & Optimization
+- **LOD System** - Dynamic Level of Detail for optimal performance
+- **Exoplanet System** - 8 realistic exoplanets beyond our solar system
+- **Enhanced Analytics** - Advanced performance monitoring dashboard
+- **Quality Presets** - Auto-optimization for different hardware
 
-### 🎯 Enhanced Physics
-- **Lagrange Points** - Visualize gravitational equilibrium points
-- **Orbital Resonance** - See planetary orbital relationships
-- **Web Workers** - Offloaded physics calculations for better performance
-- **Shooting Stars** - Random celestial events
+### 🛸 Extended Exploration
+- **Exoplanet Discovery** - Explore distant worlds like Kepler-186f and TRAPPIST-1e
+- **Mission Builder** - Create custom educational missions
+- **Import/Export** - Share missions and configurations
+- **Mobile AR Mode** - Basic AR support for mobile devices
 
-### 🎨 Customization
-- **7 Theme Presets** - Classic, Nebula, Sunrise, Ocean, Matrix, Aurora, Monochrome
-- **Accessibility Modes** - High contrast, compact mode, screen reader support
-- **Custom Themes** - Create and save your own color schemes
+### 🎯 Educational Enhancements
+- **Custom Missions** - Build your own guided tours
+- **Mission Sharing** - Export/import mission data
+- **Advanced Statistics** - Detailed performance insights
+- **Keyboard Shortcuts** - Comprehensive help panel
 
-### 📚 Educational Missions
-- **Mars Base Alpha** - Establish a permanent colony
-- **Asteroid Mining** - Extract resources from the belt
-- **Jupiter Explorer** - Study the gas giant's atmosphere
+### 🎨 UI & Accessibility Improvements
+- **Quick Access Buttons** - Mission Builder, Exoplanets, Analytics
+- **Enhanced Help System** - Keyboard shortcuts reference
+- **Quality Cycling** - Easy quality preset switching
+- **Mobile AR Badge** - AR availability indicator
+
+### 📊 v2.0 Features (Retained)
+- **WebXR/VR Support** - Virtual reality exploration
+- **Advanced Particle Systems** - Nebula, comets, visual effects
+- **Interactive Guided Tours** - Educational simulations
+- **Data Visualization** - Real-time analytics
+- **Lagrange Points & Orbital Resonance** - Advanced physics
+- **7 Theme Presets** - Customizable appearance
 
 ## ✨ Features
 
@@ -133,6 +143,16 @@ bun run start
 | **H** | Toggle help overlay |
 | **V** | Toggle data visualization |
 | **S** | Create shooting star |
+| **M** | Open Mission Builder |
+| **E** | Toggle Exoplanet System |
+| **A** | Toggle Advanced Analytics |
+| **K** | Show Keyboard Shortcuts Help |
+| **L** | Toggle LOD System (debug) |
+| **X** | Enter/Exit VR Mode |
+| **O** | Cycle Quality Settings |
+| **I** | Toggle Info Panel |
+| **D** | Toggle Debug Mode |
+| **G** | Start Grand Tour |
 
 ### UI Controls
 - **Play/Pause Button** - Control simulation
@@ -194,7 +214,7 @@ bun run start
 ## 📁 Project Structure
 
 ```
-nasa-solar-system-v2/
+nasa-solar-system-v3/
 ├── public/
 │   ├── index.html              # Main HTML
 │   ├── css/
@@ -346,7 +366,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Status**: ✅ Production Ready
-**Version**: 2.0.0
+**Version**: 3.0.0
 **Last Updated**: December 2025
 
 ## 🌟 Highlights

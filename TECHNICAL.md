@@ -11,7 +11,15 @@
 - **APIs**: NASA RSS feeds + free public APIs
 - **Language**: JavaScript ES6+ with ES Modules
 
-### New Components (v2.0)
+### New Components (v3.0)
+- **LODSystem** (`public/js/lodSystem.js`): Dynamic Level of Detail for performance optimization
+- **ExoplanetSystem** (`public/js/exoplanetSystem.js`): 8 realistic exoplanets beyond our solar system
+- **MissionBuilder** (`public/js/missionBuilder.js`): Custom mission creation and management
+- **EnhancedAnalytics** (`public/js/enhancedAnalytics.js`): Advanced performance monitoring dashboard
+- **KeyboardShortcuts** (`public/js/keyboardShortcuts.js`): Comprehensive help panel
+- **MobileAR** (`public/js/mobileAR.js`): Mobile AR support detection and basic AR mode
+
+### Components (v2.0)
 - **WebXRManager** (`public/js/webXRManager.js`): VR session management and immersive experiences
 - **ParticleSystems** (`public/js/particleSystems.js`): Advanced visual effects (nebula, comets, Lagrange points)
 - **GuidedTours** (`public/js/guidedTours.js`): Educational tour and mission system
@@ -57,7 +65,7 @@ const ratio = period1 / period2; // e.g., 2:1, 3:2 resonance
 - **Pixel Ratio Limiting**: Max 2x for performance
 - **Texture Fallback**: Solid colors if textures fail to load
 - **Web Workers**: Physics calculations offloaded to background thread
-- **LOD System**: Dynamic detail based on distance (future enhancement)
+- **LOD System**: Dynamic detail based on distance (NEW in v3.0)
 
 ### Rendering Pipeline
 ```
@@ -100,7 +108,7 @@ VR Session Start → XR Frame Loop → Dual Eye Rendering → Controller Input �
 
 ## Performance Metrics
 
-### Benchmarks (v2.0)
+### Benchmarks (v3.0)
 | Device | FPS | Memory | CPU | GPU | Features |
 |--------|-----|--------|-----|-----|----------|
 | Desktop High | 60 | ~8MB | 15-20% | 30-40% | All + VR |
@@ -122,20 +130,26 @@ VR Session Start → XR Frame Loop → Dual Eye Rendering → Controller Input �
 ## File Structure
 
 ```
-nasa-solar-system-v2/
+nasa-solar-system-v3/
 ├── public/
 │   ├── index.html
 │   ├── css/
 │   │   └── style.css          # Enhanced with themes & accessibility
 │   └── js/
-│       ├── main.js            # App entry & animation (v2.0)
+│       ├── main.js            # App entry & animation (v3.0)
 │       ├── solarSystem.js     # 3D rendering & physics (enhanced)
-│       ├── webXRManager.js    # VR support (NEW)
-│       ├── particleSystems.js # Visual effects (NEW)
-│       ├── guidedTours.js     # Educational tours (NEW)
-│       ├── dataVisualization.js # Analytics (NEW)
-│       ├── themeManager.js    # UI customization (NEW)
-│       ├── physicsWorker.js   # Background physics (NEW)
+│       ├── webXRManager.js    # VR support (v2.0)
+│       ├── particleSystems.js # Visual effects (v2.0)
+│       ├── guidedTours.js     # Educational tours (v2.0)
+│       ├── dataVisualization.js # Analytics (v2.0)
+│       ├── themeManager.js    # UI customization (v2.0)
+│       ├── physicsWorker.js   # Background physics (v2.0)
+│       ├── lodSystem.js       # LOD System (NEW v3.0)
+│       ├── exoplanetSystem.js # Exoplanets (NEW v3.0)
+│       ├── missionBuilder.js  # Mission Builder (NEW v3.0)
+│       ├── enhancedAnalytics.js # Advanced Analytics (NEW v3.0)
+│       ├── keyboardShortcuts.js # Help Panel (NEW v3.0)
+│       ├── mobileAR.js        # AR Support (NEW v3.0)
 │       ├── newsManager.js     # NASA RSS parser
 │       ├── liveDataManager.js # Real-time APIs
 │       ├── liveDataUI.js      # Live data UI
@@ -146,7 +160,7 @@ nasa-solar-system-v2/
 │       └── saveManager.js     # LocalStorage
 ├── src/
 │   └── server.ts              # Bun HTTP server
-├── package.json               # v2.0.0
+├── package.json               # v3.0.0
 ├── README.md                  # Updated
 ├── TECHNICAL.md               # This file
 └── DEPLOYMENT.md              # Deployment guide
@@ -162,19 +176,25 @@ bun run build        # Production build
 bun run start        # Production server
 ```
 
-### New Development Features
+### New Development Features (v3.0)
 ```bash
-# Test WebXR (requires HTTPS or localhost)
-bun run dev
+# Test LOD System
+# Press 'L' to see LOD metrics in console
 
-# Test Web Workers (automatic fallback)
-# No special configuration needed
+# Test Exoplanet System
+# Press 'E' to toggle exoplanets
 
-# Test themes
-# Use theme selector in UI
+# Test Mission Builder
+# Press 'M' to open mission builder
 
-# Test analytics
-# Press 'V' or click Analytics button
+# Test Advanced Analytics
+# Press 'A' to open enhanced analytics
+
+# Test Keyboard Shortcuts
+# Press 'K' to open shortcuts panel
+
+# Test Mobile AR (on mobile devices)
+# AR badge appears on mobile devices
 ```
 
 ### Configuration
@@ -216,23 +236,16 @@ bun run dev
 ## Future Enhancements
 
 ### Planned Additions
-- **LOD System**: Dynamic detail based on camera distance
-- **More Celestial Bodies**: Additional moons, exoplanets
-- **Real-time Collaboration**: Multi-user solar system exploration
-- **AI Assistant**: Natural language queries about planets
-- **Custom Missions**: User-defined mission parameters
-- **Export/Import**: Share custom configurations
-- **Mobile AR**: AR solar system on mobile devices
-
-### Experimental Features
 - **WebGPU**: Next-gen graphics API support
 - **WebAssembly**: Performance-critical calculations
 - **P2P**: Peer-to-peer data sharing
 - **Cloud Save**: Cross-device persistence
+- **AI Assistant**: Natural language queries about planets
+- **Real-time Collaboration**: Multi-user solar system exploration
 
 ---
 
-**Version**: 2.0.0
+**Version**: 3.0.0
 **Last Updated**: December 2025
 **Status**: Production Ready
-**Architecture**: Modular, Extensible, WebXR-Ready
+**Architecture**: Modular, Extensible, WebXR-Ready, Performance Optimized

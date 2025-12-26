@@ -1,13 +1,13 @@
 {
   "name": "nasa-solar-system",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Immersive 3D solar system with VR support, guided tours, advanced physics, and real-time data visualization",
   "type": "module",
   "author": "Romy Rianata",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/nasa-solar-system"
+    "url": "https://github.com/mrxploislite/nasa-solar-system"
   },
   "keywords": [
     "threejs",

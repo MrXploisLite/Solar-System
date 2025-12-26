@@ -125,6 +125,28 @@ class App {
     this.themeManager = new ThemeManager();
     this.themeManager.loadPreference();
 
+    // NEW: LOD System
+    this.lodSystem = new LODSystem(this.scene, this.camera);
+
+    // NEW: Exoplanet System
+    this.exoplanetSystem = new ExoplanetSystem(this.scene, this.solarSystem);
+
+    // NEW: Mission Builder
+    this.missionBuilder = new MissionBuilder(this.solarSystem, this.guidedTours);
+    window.missionBuilder = this.missionBuilder; // Make globally accessible
+
+    // NEW: Enhanced Analytics
+    this.enhancedAnalytics = new EnhancedAnalytics(this.dataVisualization);
+
+    // NEW: Keyboard Shortcuts
+    this.keyboardShortcuts = new KeyboardShortcuts();
+
+    // NEW: Mobile AR
+    this.mobileAR = new MobileAR(this.scene, this.camera, this.renderer);
+    if (this.mobileAR.isMobileDevice()) {
+      this.mobileAR.createARBadge();
+    }
+
     // Add Lagrange points and orbital resonance (after planets are created)
     setTimeout(() => {
       this.setupAdvancedPhysics();
@@ -146,6 +168,30 @@ class App {
     
     if (jupiter && saturn) {
       this.particleSystems.createOrbitalResonance(jupiter, saturn);
+    }
+
+    // Initialize LOD system with planets
+    if (this.lodSystem && this.solarSystem.planets) {
+      Object.entries(this.solarSystem.planets).forEach(([name, planet]) => {
+        if (name !== 'sun') {
+          this.lodSystem.registerObject(name, planet.mesh, planet.data, (lodLevel, lodObj) => {
+            // LOD update callback - adjust geometry detail
+            if (lodLevel === 'ultraLow') {
+              lodObj.mesh.visible = false;
+            } else if (lodLevel === 'low') {
+              lodObj.mesh.visible = true;
+              // Could reduce geometry segments here
+            } else {
+              lodObj.mesh.visible = true;
+            }
+          });
+        }
+      });
+    }
+
+    // Initialize exoplanet system
+    if (this.exoplanetSystem) {
+      this.exoplanetSystem.init();
     }
   }
 
@@ -320,6 +366,7 @@ class App {
 
     // Keyboard shortcuts
     window.addEventListener('keydown', (e) => {
+      // Basic controls
       if (e.key === 'r' || e.key === 'R') {
         this.resetCamera();
       } else if (e.key === ' ') {
@@ -335,16 +382,91 @@ class App {
         }
       } else if (e.key === 'c' || e.key === 'C') {
         this.solarSystem.clearTrails();
-      } else if (e.key === 'v' || e.key === 'V') {
+      } else if (e.key === 'h' || e.key === 'H') {
+        // Toggle keyboard shortcuts panel
+        if (this.keyboardShortcuts) {
+          this.keyboardShortcuts.toggle();
+        }
+      }
+      
+      // View & Visualization
+      else if (e.key === 'v' || e.key === 'V') {
         // Toggle data visualization
         if (this.dataVisualization) {
           this.dataVisualization.toggle();
+        }
+      } else if (e.key === 'p' || e.key === 'P') {
+        // Toggle performance panel (existing)
+        const perfPanel = document.getElementById('performance-panel');
+        if (perfPanel) {
+          perfPanel.style.display = perfPanel.style.display === 'none' ? 'block' : 'none';
         }
       } else if (e.key === 's' || e.key === 'S') {
         // Shooting star effect
         if (this.particleSystems) {
           this.particleSystems.createShootingStar();
         }
+      } else if (e.key === 'e' || e.key === 'E') {
+        // Toggle exoplanet system
+        if (this.exoplanetSystem) {
+          this.exoplanetSystem.toggleExoplanets();
+        }
+      } else if (e.key === 'l' || e.key === 'L') {
+        // Toggle LOD system (for testing)
+        if (this.lodSystem) {
+          console.log('LOD Metrics:', this.lodSystem.getMetrics());
+        }
+      }
+      
+      // Educational Features
+      else if (e.key === 'm' || e.key === 'M') {
+        // Open mission builder
+        if (this.missionBuilder) {
+          this.missionBuilder.toggle();
+        }
+      } else if (e.key === 'g' || e.key === 'G') {
+        // Start Grand Tour
+        if (this.guidedTours) {
+          const grandTour = this.guidedTours.tours.find(t => t.id === 'solar-system-overview');
+          if (grandTour) {
+            this.guidedTours.startTour(grandTour);
+          }
+        }
+      } else if (e.key === 'a' || e.key === 'A') {
+        // Toggle advanced analytics
+        if (this.enhancedAnalytics) {
+          this.enhancedAnalytics.toggle();
+        }
+      } else if (e.key === 'k' || e.key === 'K') {
+        // Show keyboard shortcuts
+        if (this.keyboardShortcuts) {
+          this.keyboardShortcuts.toggle();
+        }
+      }
+      
+      // VR & Advanced
+      else if (e.key === 'x' || e.key === 'X') {
+        // Toggle VR mode
+        if (this.webXRManager) {
+          if (this.webXRManager.isInVR) {
+            this.webXRManager.exitVR();
+          } else {
+            this.webXRManager.enterVR();
+          }
+        }
+      } else if (e.key === 'o' || e.key === 'O') {
+        // Toggle quality settings
+        this.cycleQualitySettings();
+      } else if (e.key === 'i' || e.key === 'I') {
+        // Toggle info panel
+        const infoPanel = document.getElementById('info-panel');
+        if (infoPanel) {
+          infoPanel.style.display = infoPanel.style.display === 'none' ? 'block' : 'none';
+        }
+      } else if (e.key === 'd' || e.key === 'D') {
+        // Toggle debug mode
+        this.debug = !this.debug;
+        console.log(`Debug mode: ${this.debug ? 'ON' : 'OFF'}`);
       }
     });
   }
@@ -385,6 +507,73 @@ class App {
 
     document.body.appendChild(shootingStarBtn);
 
+    // Add mission builder button
+    const missionBuilderBtn = document.createElement('button');
+    missionBuilderBtn.id = 'mission-builder-btn';
+    missionBuilderBtn.textContent = '🚀 Mission Builder';
+    missionBuilderBtn.style.cssText = `
+      position: fixed;
+      bottom: 80px;
+      right: 120px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      z-index: 100;
+      transition: all 0.2s ease;
+    `;
+
+    missionBuilderBtn.addEventListener('mouseenter', () => {
+      missionBuilderBtn.style.transform = 'translateY(-2px)';
+      missionBuilderBtn.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+    });
+
+    missionBuilderBtn.addEventListener('mouseleave', () => {
+      missionBuilderBtn.style.transform = 'translateY(0)';
+      missionBuilderBtn.style.boxShadow = 'none';
+    });
+
+    missionBuilderBtn.addEventListener('click', () => {
+      if (this.missionBuilder) {
+        this.missionBuilder.toggle();
+      }
+    });
+
+    document.body.appendChild(missionBuilderBtn);
+
+    // Add exoplanet toggle button
+    const exoplanetBtn = document.createElement('button');
+    exoplanetBtn.id = 'exoplanet-toggle-btn';
+    exoplanetBtn.textContent = '🪐 Exoplanets';
+    exoplanetBtn.style.cssText = `
+      position: fixed;
+      bottom: 140px;
+      right: 16px;
+      padding: 8px 12px;
+      background: rgba(123, 104, 238, 0.2);
+      border: 1px solid rgba(123, 104, 238, 0.4);
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 11px;
+      z-index: 100;
+      transition: all 0.2s ease;
+    `;
+
+    exoplanetBtn.addEventListener('click', () => {
+      if (this.exoplanetSystem) {
+        const enabled = this.exoplanetSystem.toggleExoplanets();
+        exoplanetBtn.style.background = enabled ? 'rgba(123, 104, 238, 0.4)' : 'rgba(123, 104, 238, 0.2)';
+        exoplanetBtn.textContent = enabled ? '🪐 Exoplanets: ON' : '🪐 Exoplanets: OFF';
+      }
+    });
+
+    document.body.appendChild(exoplanetBtn);
+
     // Add info about new features to the info panel
     const infoPanel = document.getElementById('info-panel');
     if (infoPanel) {
@@ -398,12 +587,13 @@ class App {
         border: 1px solid rgba(74, 144, 226, 0.3);
       `;
       newFeatures.innerHTML = `
-        <strong style="color: #4A90E2;">✨ New in v2.0:</strong><br>
-        • Press V for Analytics<br>
-        • Press S for Shooting Stars<br>
-        • Use Tours & Missions button<br>
-        • Try VR if available<br>
-        • Customize Themes
+        <strong style="color: #4A90E2;">✨ New in v3.0:</strong><br>
+        • Press M for Mission Builder<br>
+        • Press E for Exoplanets<br>
+        • Press A for Advanced Analytics<br>
+        • Press K for Shortcuts Help<br>
+        • Press L for LOD System<br>
+        • Mobile AR Support
       `;
       infoPanel.appendChild(newFeatures);
     }
@@ -507,6 +697,23 @@ class App {
         this.dataVisualization.recordObjectCount(this.getObjectCount());
         this.dataVisualization.recordMemory(this.getMemoryUsage());
       }
+
+      // Update enhanced analytics
+      if (this.enhancedAnalytics && this.enhancedAnalytics.isVisible) {
+        // Record LOD metrics if available
+        if (this.lodSystem) {
+          this.enhancedAnalytics.recordLODMetrics(this.lodSystem.getMetrics());
+        }
+        // Record exoplanet count
+        if (this.exoplanetSystem) {
+          this.enhancedAnalytics.recordExoplanetCount(this.exoplanetSystem.getExoplanetCount());
+        }
+        // Record particle count
+        if (this.particleSystems) {
+          const particleCount = this.particleSystems.nebulaParticles ? 5000 : 0;
+          this.enhancedAnalytics.recordParticleCount(particleCount);
+        }
+      }
     }
 
     if (!this.isPaused) {
@@ -516,6 +723,16 @@ class App {
       // Update particle systems
       if (this.particleSystems) {
         this.particleSystems.update(delta, time);
+      }
+
+      // Update exoplanet system
+      if (this.exoplanetSystem) {
+        this.exoplanetSystem.update(delta * this.timeSpeed);
+      }
+
+      // Update LOD system
+      if (this.lodSystem) {
+        this.lodSystem.update(delta, time);
       }
 
       // Update physics worker if available
@@ -550,7 +767,160 @@ class App {
       if (this.particleSystems.nebulaParticles) count += 5000;
       if (this.particleSystems.systems.comets) count += 100;
     }
+    // Add exoplanet count
+    if (this.exoplanetSystem && this.exoplanetSystem.enabled) {
+      count += this.exoplanetSystem.getExoplanetCount();
+    }
     return count;
+  }
+
+  cycleQualitySettings() {
+    // Cycle through quality presets
+    const presets = ['low', 'medium', 'high', 'ultra'];
+    const currentQuality = this.getCurrentQuality();
+    const currentIndex = presets.indexOf(currentQuality);
+    const nextIndex = (currentIndex + 1) % presets.length;
+    const nextQuality = presets[nextIndex];
+
+    this.applyQualityPreset(nextQuality);
+    console.log(`Quality preset changed to: ${nextQuality}`);
+
+    // Show notification
+    this.showQualityNotification(nextQuality);
+  }
+
+  getCurrentQuality() {
+    // Determine current quality based on settings
+    if (this.qualitySettings) {
+      if (this.qualitySettings.bloom && this.qualitySettings.atmosphere && this.qualitySettings.pixelRatio >= 2) {
+        return 'ultra';
+      } else if (this.qualitySettings.bloom && this.qualitySettings.trails) {
+        return 'high';
+      } else if (this.qualitySettings.bloom) {
+        return 'medium';
+      } else {
+        return 'low';
+      }
+    }
+    return 'medium';
+  }
+
+  applyQualityPreset(preset) {
+    const presets = {
+      low: {
+        bloom: false,
+        trails: false,
+        atmosphere: false,
+        antialiasing: false,
+        pixelRatio: 1
+      },
+      medium: {
+        bloom: true,
+        trails: true,
+        atmosphere: false,
+        antialiasing: true,
+        pixelRatio: Math.min(window.devicePixelRatio, 1.5)
+      },
+      high: {
+        bloom: true,
+        trails: true,
+        atmosphere: true,
+        antialiasing: true,
+        pixelRatio: Math.min(window.devicePixelRatio, 2)
+      },
+      ultra: {
+        bloom: true,
+        trails: true,
+        atmosphere: true,
+        antialiasing: true,
+        pixelRatio: window.devicePixelRatio
+      }
+    };
+
+    this.qualitySettings = presets[preset];
+
+    // Apply bloom settings
+    if (this.bloomPass) {
+      this.bloomPass.enabled = this.qualitySettings.bloom;
+      this.bloomPass.strength = preset === 'ultra' ? 0.8 : preset === 'high' ? 0.6 : 0.4;
+    }
+
+    // Apply pixel ratio
+    if (this.renderer) {
+      this.renderer.setPixelRatio(this.qualitySettings.pixelRatio);
+    }
+
+    // Apply trail visibility
+    if (this.solarSystem) {
+      if (this.qualitySettings.trails) {
+        this.solarSystem.showTrails = true;
+        Object.values(this.solarSystem.trails).forEach(trail => {
+          if (trail.line) trail.line.visible = true;
+        });
+      } else {
+        this.solarSystem.showTrails = false;
+        Object.values(this.solarSystem.trails).forEach(trail => {
+          if (trail.line) trail.line.visible = false;
+        });
+      }
+    }
+
+    // Apply atmosphere visibility
+    if (this.solarSystem && this.solarSystem.planets) {
+      Object.values(this.solarSystem.planets).forEach(planet => {
+        if (planet.mesh.userData.atmosphere) {
+          planet.mesh.userData.atmosphere.visible = this.qualitySettings.atmosphere;
+        }
+      });
+    }
+  }
+
+  showQualityNotification(quality) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 20, 35, 0.95);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      z-index: 10000;
+      border: 2px solid #4A90E2;
+      text-align: center;
+      animation: fadeInOut 2s ease-in-out;
+    `;
+    
+    const qualityColors = {
+      low: '#F38181',
+      medium: '#FFE66D',
+      high: '#4A90E2',
+      ultra: '#38ef7d'
+    };
+
+    notification.innerHTML = `
+      <div style="color: ${qualityColors[quality]}; margin-bottom: 5px;">Quality Preset</div>
+      <div style="font-size: 20px; color: ${qualityColors[quality]};">${quality.toUpperCase()}</div>
+    `;
+
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 2000);
   }
 
   getMemoryUsage() {

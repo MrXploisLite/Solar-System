@@ -68,7 +68,7 @@ export class ParticleSystems {
         }
 
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('particleColor', new THREE.Float32BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
         geometry.setAttribute('opacity', new THREE.Float32BufferAttribute(opacities, 1));
 
@@ -80,13 +80,13 @@ export class ParticleSystems {
             vertexShader: `
                 attribute float size;
                 attribute float opacity;
-                attribute vec3 color;
+                attribute vec3 particleColor;
                 varying vec3 vColor;
                 varying float vOpacity;
                 uniform float time;
                 
                 void main() {
-                    vColor = color;
+                    vColor = particleColor;
                     vOpacity = opacity * (0.8 + 0.2 * sin(time * 0.5 + position.x * 0.001));
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
                     gl_PointSize = size * (300.0 / -mvPosition.z);
@@ -211,7 +211,7 @@ export class ParticleSystems {
         }
 
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('particleColor', new THREE.Float32BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
         geometry.setAttribute('rotation', new THREE.Float32BufferAttribute(rotations, 3));
 
@@ -221,12 +221,12 @@ export class ParticleSystems {
             },
             vertexShader: `
                 attribute float size;
-                attribute vec3 color;
+                attribute vec3 particleColor;
                 attribute vec3 rotation;
                 varying vec3 vColor;
                 
                 void main() {
-                    vColor = color;
+                    vColor = particleColor;
                     vec3 pos = position;
                     
                     // Simple rotation animation

@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 // Exoplanet System - Adds realistic exoplanets to the solar system
 export class ExoplanetSystem {
     constructor(scene, solarSystem) {

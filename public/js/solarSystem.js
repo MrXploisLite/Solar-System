@@ -148,8 +148,8 @@ export class SolarSystem {
   createSun() {
     const sunGeometry = new THREE.SphereGeometry(PLANET_DATA.sun.radius, 64, 64);
     const sunMaterial = new THREE.MeshBasicMaterial({
-      map: this.textures.sun,
-      color: 0xFFFFFF
+      map: this.textures.sun || null,
+      color: this.textures.sun ? 0xFFFFFF : 0xFDB813
     });
 
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);

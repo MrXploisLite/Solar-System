@@ -15,6 +15,11 @@ import { ParticleSystems } from './particleSystems.js';
 import { SolarSystem } from './solarSystem.js';
 import { ThemeManager } from './themeManager.js';
 import { WebXRManager } from './webXRManager.js';
+import { LiveDataManager } from './liveDataManager.js';
+import { LiveDataUI } from './liveDataUI.js';
+import { NewsManager } from './newsManager.js';
+import { InfoPanelManager } from './infoPanelManager.js';
+import { SaveManager } from './saveManager.js';
 
 class App {
   constructor() {
@@ -81,6 +86,9 @@ class App {
     
     this.solarSystem.onPlanetClick = (planetName, planetMesh) => {
       this.flyToPlanet(planetName, planetMesh);
+      if (this.infoPanelManager) {
+        this.infoPanelManager.show(planetName);
+      }
     };
 
     // Initialize new managers
@@ -152,6 +160,21 @@ class App {
     if (this.mobileAR.isMobileDevice()) {
       this.mobileAR.createARBadge();
     }
+
+    // Live Data
+    this.liveDataManager = new LiveDataManager();
+    this.liveDataManager.start();
+    this.liveDataUI = new LiveDataUI(this.liveDataManager);
+
+    // News Manager
+    this.newsManager = new NewsManager();
+    this.newsManager.startFetching();
+
+    // Info Panel Manager
+    this.infoPanelManager = new InfoPanelManager();
+
+    // Save Manager
+    this.saveManager = new SaveManager();
 
     // Add Lagrange points and orbital resonance (after planets are created)
     setTimeout(() => {
@@ -363,6 +386,10 @@ class App {
         if (planet) {
           this.flyToPlanet(planetName, planet.mesh);
           this.solarSystem.showPlanetInfo(planet.mesh.userData);
+
+          if (this.infoPanelManager && btn.dataset.planet !== 'sun' && !btn.classList.contains('dwarf-btn')) {
+            this.infoPanelManager.show(planetName);
+          }
         }
       });
     });
@@ -946,4 +973,4 @@ class App {
 }
 
 // Start the application
-new App();
+window.app = new App();

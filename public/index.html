@@ -4,112 +4,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NASA Solar System Explorer - Interactive 3D Visualization</title>
+  <title>NASA Solar System Explorer v3.0</title>
   <meta name="description"
-    content="Explore our solar system in stunning 3D with realistic NASA data, atmospheric effects, 8 planets, 5 dwarf planets, and real-time orbital mechanics.">
-  <meta name="keywords"
-    content="NASA, solar system, 3D visualization, planets, space, astronomy, Three.js, WebGL, interactive">
-  <meta name="author" content="Romy Rianata">
+    content="Experience the cosmos in stunning v3.0 glassmorphism. Real-time NASA data, AI assistant, and advanced orbital physics.">
   <meta name="theme-color" content="#0B3D91">
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="NASA Solar System Explorer">
-  <meta property="og:description"
-    content="Interactive 3D solar system with realistic NASA data and stunning visual effects">
-  <meta property="og:image" content="/preview.jpg">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="NASA Solar System Explorer">
-  <meta name="twitter:description" content="Explore our solar system in stunning 3D">
-
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
   <div id="loading">
     <div class="loader"></div>
-    <p>Loading Solar System...</p>
+    <p>Initializing Solar System v3.0...</p>
   </div>
 
+  <!-- Top Telemetry HUD -->
   <div id="hud-top">
-    <div class="hud-item">
-      <span class="hud-label">MISSION STATUS:</span>
-      <span class="hud-value" id="hud-mission-status">NOMINAL</span>
+    <div class="telemetry-item">
+      <span class="label">MISSION TIME</span>
+      <span id="mission-time" class="value">00:00:00:00</span>
     </div>
-    <div class="hud-item">
-      <span class="hud-label">DATA FEED:</span>
-      <span class="hud-value" id="hud-data-feed">CONNECTED</span>
+    <div class="telemetry-item">
+      <span class="label">FPS</span>
+      <span id="fps-counter" class="value">60</span>
     </div>
-    <div class="hud-item">
-      <span class="hud-label">SYSTEM TIME:</span>
-      <span class="hud-value" id="hud-time">--:--:--</span>
+    <div class="telemetry-item">
+      <span class="label">VELOCITY</span>
+      <span id="cam-velocity" class="value">0 km/s</span>
+    </div>
+    <div id="active-target">
+      <span class="label">TARGET</span>
+      <span id="target-name" class="value">FREE FLIGHT</span>
     </div>
   </div>
 
-  <div id="info-panel">
-    <div class="panel-toggle">
-      <h1>Solar System</h1>
-      <button id="toggle-panel" title="Collapse/Expand Panel">−</button>
+  <!-- Main Info Panel (Glassmorphism) -->
+  <div id="info-panel" class="glass-panel">
+    <div class="panel-header">
+      <h1 id="planet-name-display">SOLAR SYSTEM</h1>
+      <button id="toggle-panel" title="Toggle Panel"><i class="fas fa-chevron-left"></i></button>
     </div>
-    <div id="time-display"></div>
-    <div id="planet-info"></div>
-    <div class="controls">
-      <button id="play-pause">Pause Simulation</button>
-      <button id="reset-view">Reset Camera</button>
-      <div style="display: flex; gap: 8px;">
-        <button id="toggle-trails" style="flex: 1;">Hide Trails</button>
-        <button id="clear-trails" style="flex: 1;">Clear Trails</button>
+
+    <div id="planet-details" class="scroll-area">
+      <div id="planet-info-content">
+        <p class="description">Select a celestial body to begin telemetry analysis.</p>
       </div>
-      <label>
-        <span style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500;">Simulation Speed</span>
-        <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
-          <input type="range" id="speed-control" min="0.1" max="10" step="0.1" value="1" style="flex: 1;">
-          <span id="speed-value" style="min-width: 35px; font-weight: 600; color: #0B3D91;">1x</span>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-label">Gravity</span>
+          <span id="stat-gravity" class="stat-value">--</span>
         </div>
-      </label>
+        <div class="stat-box">
+          <span class="stat-label">Temp</span>
+          <span id="stat-temp" class="stat-value">--</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Radius</span>
+          <span id="stat-radius" class="stat-value">--</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Moons</span>
+          <span id="stat-moons" class="stat-value">--</span>
+        </div>
+      </div>
     </div>
-    <div class="planet-selector">
-      <span
-        style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin-bottom: 8px;">Planets</span>
-      <div class="planet-buttons">
-        <button class="planet-btn" data-planet="sun">Sun</button>
-        <button class="planet-btn" data-planet="mercury">Mercury</button>
-        <button class="planet-btn" data-planet="venus">Venus</button>
-        <button class="planet-btn" data-planet="earth">Earth</button>
-        <button class="planet-btn" data-planet="mars">Mars</button>
-        <button class="planet-btn" data-planet="jupiter">Jupiter</button>
-        <button class="planet-btn" data-planet="saturn">Saturn</button>
-        <button class="planet-btn" data-planet="uranus">Uranus</button>
-        <button class="planet-btn" data-planet="neptune">Neptune</button>
-      </div>
-      <span
-        style="font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; display: block; margin: 12px 0 8px 0;">Dwarf
-        Planets</span>
-      <div class="planet-buttons">
-        <button class="planet-btn dwarf-btn" data-planet="ceres">Ceres</button>
-        <button class="planet-btn dwarf-btn" data-planet="pluto">Pluto</button>
-        <button class="planet-btn dwarf-btn" data-planet="eris">Eris</button>
-        <button class="planet-btn dwarf-btn" data-planet="makemake">Makemake</button>
-        <button class="planet-btn dwarf-btn" data-planet="haumea">Haumea</button>
-      </div>
+
+    <div class="panel-controls">
+      <button id="fly-to-target" class="primary-btn"><i class="fas fa-paper-plane"></i> Fly To</button>
+      <button id="view-analytics" class="secondary-btn"><i class="fas fa-chart-line"></i> Analytics</button>
     </div>
   </div>
 
-  <div id="credits">
-    <p style="font-weight: 600;">Solar System Explorer</p>
-    <p style="font-size: 10px; opacity: 0.5;">Interactive 3D Visualization</p>
+  <!-- Centralized Bottom Control Dock -->
+  <div id="control-dock-container">
+    <div id="control-dock" class="glass-panel">
+      <button class="dock-item" id="dock-tour" title="Guided Tours (G)">
+        <i class="fas fa-map-marked-alt"></i>
+        <span class="dock-label">Tours</span>
+      </button>
+      <button class="dock-item" id="dock-mission" title="Mission Builder (M)">
+        <i class="fas fa-rocket"></i>
+        <span class="dock-label">Mission</span>
+      </button>
+      <button class="dock-item" id="dock-analytics" title="Analytics (A)">
+        <i class="fas fa-microscope"></i>
+        <span class="dock-label">Science</span>
+      </button>
+      <button class="dock-item" id="dock-exoplanets" title="Exoplanets (E)">
+        <i class="fas fa-globe"></i>
+        <span class="dock-label">Exo</span>
+      </button>
+      <div class="dock-separator"></div>
+      <button class="dock-item" id="dock-ai" title="AI Assistant">
+        <i class="fas fa-robot"></i>
+        <span class="dock-label">Assistant</span>
+      </button>
+      <button class="dock-item" id="dock-star" title="Shooting Star (S)">
+        <i class="fas fa-star"></i>
+        <span class="dock-label">Meteor</span>
+      </button>
+      <div class="dock-separator"></div>
+      <button class="dock-item" id="dock-theme" title="Themes">
+        <i class="fas fa-palette"></i>
+        <span class="dock-label">Theme</span>
+      </button>
+      <button class="dock-item" id="dock-settings" title="Settings (K/H)">
+        <i class="fas fa-cog"></i>
+        <span class="dock-label">Config</span>
+      </button>
+    </div>
   </div>
 
-  <div id="news-notification" class="hidden"></div>
+  <!-- AI Assistant Chat Interface -->
+  <div id="ai-chat-window" class="glass-panel hidden">
+    <div class="chat-header">
+      <span><i class="fas fa-robot"></i> Space Assistant</span>
+      <button id="close-ai"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="chat-messages" class="scroll-area">
+      <div class="message ai-message">Greetings, Commander. How can I assist your exploration today?</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="ai-input" placeholder="Ask about planets, missions...">
+      <button id="send-ai"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
 
-  <div id="control-dock">
-    <button class="dock-btn" id="dock-tour" title="Guided Tours">🎬</button>
-    <button class="dock-btn" id="dock-missions" title="Mission Builder">🚀</button>
-    <button class="dock-btn" id="dock-analytics" title="Advanced Analytics">📊</button>
-    <button class="dock-btn" id="dock-exoplanets" title="Exoplanet Search">🪐</button>
-    <button class="dock-btn" id="dock-settings" title="System Settings">⚙️</button>
+  <div id="credits-v3">
+    <span class="version">v3.0 SUPER MAJOR UPDATE</span>
+    <span class="author">By Romy Rianata</span>
   </div>
 
   <script type="importmap">
@@ -121,7 +146,6 @@
     }
   </script>
   <script type="module" src="/js/main.js"></script>
-  <!-- Additional modules are loaded dynamically by main.js -->
 </body>
 
 </html>

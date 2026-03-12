@@ -892,3 +892,232 @@ body[data-theme="monochrome"] {
 .fun-facts-list li {
   margin-bottom: 8px;
 }
+
+/* AI Assistant */
+.ai-assistant {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: rgba(10, 15, 25, 0.98);
+  border: 1px solid #4A90E2;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+.ai-assistant.hidden {
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ai-header {
+  background: #4A90E2;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-header h3 {
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#ai-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.ai-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ai-messages::-webkit-scrollbar-thumb {
+  background: rgba(74, 144, 226, 0.3);
+  border-radius: 2px;
+}
+
+.ai-message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ai-message.bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-bottom-left-radius: 2px;
+  border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.ai-message.user {
+  align-self: flex-end;
+  background: #4A90E2;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.ai-input-area {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#ai-input {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  outline: none;
+}
+
+#ai-input:focus {
+  border-color: #4A90E2;
+}
+
+#ai-send {
+  background: #4A90E2;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 0 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+#ai-send:hover {
+  background: #357ABD;
+}
+
+/* AI Assistant Trigger */
+.ai-trigger {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #4A90E2 0%, #0B3D91 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 2500;
+  font-size: 24px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.ai-trigger:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 8px 30px rgba(74, 144, 226, 0.6);
+}
+
+/* HUD Top */
+#hud-top {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+  padding: 12px 40px;
+  background: linear-gradient(180deg, rgba(10, 15, 25, 0.8) 0%, transparent 100%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hud-label {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+
+.hud-value {
+  font-size: 14px;
+  color: #4A90E2;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+/* Control Dock */
+#control-dock {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(10, 15, 25, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.dock-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-btn:hover {
+  background: #4A90E2;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+}

@@ -15,6 +15,12 @@ import { ParticleSystems } from './particleSystems.js';
 import { SolarSystem } from './solarSystem.js';
 import { ThemeManager } from './themeManager.js';
 import { WebXRManager } from './webXRManager.js';
+import { LiveDataManager } from './liveDataManager.js';
+import { LiveDataUI } from './liveDataUI.js';
+import { NewsManager } from './newsManager.js';
+import { InfoPanelManager } from './infoPanelManager.js';
+import { SaveManager } from './saveManager.js';
+import { AIAssistant } from './aiAssistant.js';
 
 class App {
   constructor() {
@@ -81,6 +87,9 @@ class App {
     
     this.solarSystem.onPlanetClick = (planetName, planetMesh) => {
       this.flyToPlanet(planetName, planetMesh);
+      if (this.infoPanelManager) {
+        this.infoPanelManager.show(planetName);
+      }
     };
 
     // Initialize new managers
@@ -102,6 +111,19 @@ class App {
 
     // Start animation
     this.animate();
+    this.startHUDUpdates();
+  }
+
+  startHUDUpdates() {
+    const timeElement = document.getElementById('hud-time');
+    const update = () => {
+      if (timeElement) {
+        const now = new Date();
+        timeElement.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+      }
+      requestAnimationFrame(update);
+    };
+    update();
   }
 
   initNewManagers() {
@@ -152,6 +174,24 @@ class App {
     if (this.mobileAR.isMobileDevice()) {
       this.mobileAR.createARBadge();
     }
+
+    // Live Data
+    this.liveDataManager = new LiveDataManager();
+    this.liveDataManager.start();
+    this.liveDataUI = new LiveDataUI(this.liveDataManager);
+
+    // News Manager
+    this.newsManager = new NewsManager();
+    this.newsManager.startFetching();
+
+    // Info Panel Manager
+    this.infoPanelManager = new InfoPanelManager();
+
+    // Save Manager
+    this.saveManager = new SaveManager();
+
+    // AI Assistant
+    this.aiAssistant = new AIAssistant(this.solarSystem);
 
     // Add Lagrange points and orbital resonance (after planets are created)
     setTimeout(() => {
@@ -205,68 +245,67 @@ class App {
     // Check if Web Workers are supported
     if (window.Worker) {
       try {
-        // Create worker from inline code (for compatibility)
-        const workerCode = `
-          // Physics Worker Code (simplified)
-          let planets = [];
-          let timeSpeed = 1;
-          
-          self.onmessage = function(e) {
-            const { type, data } = e.data;
-            
-            if (type === 'init') {
-              planets = data.planets || [];
-              timeSpeed = data.timeSpeed || 1;
-              self.postMessage({ type: 'ready', data: { message: 'Worker ready' } });
-            } else if (type === 'update') {
-              // Simplified physics update
-              const updates = planets.map(planet => {
-                if (planet.name === 'sun') return { name: 'sun', position: { x: 0, y: 0, z: 0 } };
-                
-                const angle = planet.angle + (planet.speed / planet.distance) * data.delta * 0.1 * timeSpeed;
-                const x = Math.cos(angle) * planet.distance;
-                const z = Math.sin(angle) * planet.distance;
-                planet.angle = angle;
-                
-                return { name: planet.name, position: { x, y: 0, z } };
-              });
-              
-              self.postMessage({ type: 'update', data: { planets: updates, time: data.time } });
-            } else if (type === 'setTimeSpeed') {
-              timeSpeed = data;
-            }
-          };
-        `;
-
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        this.physicsWorker = new Worker(URL.createObjectURL(blob));
+        this.physicsWorker = new Worker('/js/physicsWorker.js');
         
         this.physicsWorker.onmessage = (e) => {
-          if (e.data.type === 'ready') {
-            console.log('✅ Physics Worker initialized');
+          const { type, data } = e.data;
+
+          if (type === 'ready') {
+            console.log('✅ Physics Worker initialized:', data.message);
             this.usePhysicsWorker = true;
-          } else if (e.data.type === 'update') {
-            // Apply worker updates
-            e.data.data.planets.forEach(update => {
+          } else if (type === 'update') {
+            // Apply planet updates
+            data.planets.forEach(update => {
               const planet = this.solarSystem.planets[update.name];
               if (planet && update.position) {
                 planet.mesh.position.set(update.position.x, update.position.y, update.position.z);
+                planet.angle = update.angle; // Keep angle in sync
               }
             });
+
+            // Apply moon updates
+            data.moons.forEach(update => {
+              const planet = this.solarSystem.planets[update.planet];
+              if (planet && planet.mesh.userData.moons) {
+                const moon = planet.mesh.userData.moons.find(m => m.userData.name === update.moon);
+                if (moon) {
+                  moon.position.set(update.position.x, update.position.y, update.position.z);
+                }
+              }
+            });
+          } else if (type === 'performance') {
+            if (this.dataVisualization && this.dataVisualization.isVisible) {
+              this.dataVisualization.recordWorkerLoad(data.workerLoad);
+            }
           }
         };
 
-        // Initialize worker
-        const planetData = Object.entries(this.solarSystem.planets).map(([name, planet]) => ({
-          name,
-          distance: planet.data.distance || 0,
-          speed: planet.data.speed || 0,
-          angle: planet.angle || 0
-        }));
+        // Prepare comprehensive planet and moon data for worker
+        const planetData = Object.entries(this.solarSystem.planets).map(([name, planet]) => {
+          const moons = (planet.mesh.userData.moons || []).map(moon => ({
+            name: moon.userData.name,
+            distance: moon.userData.distance,
+            speed: moon.userData.speed,
+            angle: moon.userData.angle
+          }));
 
+          return {
+            name,
+            distance: planet.data.distance || 0,
+            speed: planet.data.speed || 0,
+            angle: planet.angle || 0,
+            moons: moons
+          };
+        });
+
+        // Initialize worker with full data
         this.physicsWorker.postMessage({
           type: 'init',
-          data: { planets: planetData, timeSpeed: this.timeSpeed }
+          data: {
+            planets: planetData,
+            timeSpeed: this.timeSpeed,
+            initialTime: this.clock.getElapsedTime()
+          }
         });
 
       } catch (error) {
@@ -363,12 +402,18 @@ class App {
         if (planet) {
           this.flyToPlanet(planetName, planet.mesh);
           this.solarSystem.showPlanetInfo(planet.mesh.userData);
+
+          if (this.infoPanelManager && btn.dataset.planet !== 'sun' && !btn.classList.contains('dwarf-btn')) {
+            this.infoPanelManager.show(planetName);
+          }
         }
       });
     });
     
     // Add new UI controls for advanced features
     this.setupAdvancedUI();
+    this.setupDockListeners();
+    this.createAITrigger();
 
     // Keyboard shortcuts
     window.addEventListener('keydown', (e) => {
@@ -475,6 +520,26 @@ class App {
         console.log(`Debug mode: ${this.debug ? 'ON' : 'OFF'}`);
       }
     });
+  }
+
+  setupDockListeners() {
+    document.getElementById('dock-tour')?.addEventListener('click', () => {
+      const grandTour = this.guidedTours.tours.find(t => t.id === 'solar-system-overview');
+      if (grandTour) this.guidedTours.startTour(grandTour);
+    });
+    document.getElementById('dock-missions')?.addEventListener('click', () => this.missionBuilder.toggle());
+    document.getElementById('dock-analytics')?.addEventListener('click', () => this.dataVisualization.toggle());
+    document.getElementById('dock-exoplanets')?.addEventListener('click', () => this.exoplanetSystem.toggleExoplanets());
+    document.getElementById('dock-settings')?.addEventListener('click', () => this.keyboardShortcuts.toggle());
+  }
+
+  createAITrigger() {
+    const trigger = document.createElement('div');
+    trigger.className = 'ai-trigger';
+    trigger.innerHTML = '✨';
+    trigger.title = 'Open Space Assistant';
+    trigger.addEventListener('click', () => this.aiAssistant.toggle());
+    document.body.appendChild(trigger);
   }
 
   setupAdvancedUI() {
@@ -946,4 +1011,4 @@ class App {
 }
 
 // Start the application
-new App();
+window.app = new App();

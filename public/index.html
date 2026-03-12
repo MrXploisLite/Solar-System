@@ -33,6 +33,21 @@
     <p>Loading Solar System...</p>
   </div>
 
+  <div id="hud-top">
+    <div class="hud-item">
+      <span class="hud-label">MISSION STATUS:</span>
+      <span class="hud-value" id="hud-mission-status">NOMINAL</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">DATA FEED:</span>
+      <span class="hud-value" id="hud-data-feed">CONNECTED</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">SYSTEM TIME:</span>
+      <span class="hud-value" id="hud-time">--:--:--</span>
+    </div>
+  </div>
+
   <div id="info-panel">
     <div class="panel-toggle">
       <h1>Solar System</h1>
@@ -85,6 +100,16 @@
   <div id="credits">
     <p style="font-weight: 600;">Solar System Explorer</p>
     <p style="font-size: 10px; opacity: 0.5;">Interactive 3D Visualization</p>
+  </div>
+
+  <div id="news-notification" class="hidden"></div>
+
+  <div id="control-dock">
+    <button class="dock-btn" id="dock-tour" title="Guided Tours">🎬</button>
+    <button class="dock-btn" id="dock-missions" title="Mission Builder">🚀</button>
+    <button class="dock-btn" id="dock-analytics" title="Advanced Analytics">📊</button>
+    <button class="dock-btn" id="dock-exoplanets" title="Exoplanet Search">🪐</button>
+    <button class="dock-btn" id="dock-settings" title="System Settings">⚙️</button>
   </div>
 
   <script type="importmap">

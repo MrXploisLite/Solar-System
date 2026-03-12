@@ -64,6 +64,48 @@ export class ThemeManager {
                     fontSize: '14px',
                     fontFamily: 'Inter, sans-serif'
                 }
+            },
+            void: {
+                name: 'Deep Void',
+                description: 'Ultra-dark minimalist theme',
+                colors: {
+                    primary: '#2C3E50',
+                    secondary: '#BDC3C7',
+                    background: '#050505',
+                    panel: 'rgba(10, 10, 10, 0.98)',
+                    text: '#ECF0F1',
+                    accent: '#7F8C8D',
+                    success: '#27AE60',
+                    warning: '#F1C40F',
+                    danger: '#C0392B'
+                },
+                ui: {
+                    panelBlur: '5px',
+                    buttonRadius: '2px',
+                    fontSize: '14px',
+                    fontFamily: 'Inter, sans-serif'
+                }
+            },
+            cyber: {
+                name: 'Cyberpunk',
+                description: 'Neon-infused high contrast',
+                colors: {
+                    primary: '#FF00FF',
+                    secondary: '#00FFFF',
+                    background: '#03001C',
+                    panel: 'rgba(13, 10, 45, 0.9)',
+                    text: '#00FFFF',
+                    accent: '#FFFF00',
+                    success: '#00FF00',
+                    warning: '#FFFF00',
+                    danger: '#FF0000'
+                },
+                ui: {
+                    panelBlur: '15px',
+                    buttonRadius: '0px',
+                    fontSize: '14px',
+                    fontFamily: 'Space Grotesk, sans-serif'
+                }
             }
         };
 

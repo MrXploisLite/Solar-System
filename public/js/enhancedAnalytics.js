@@ -7,7 +7,7 @@ export class EnhancedAnalytics {
             fps: [],
             objectCount: [],
             memory: [],
-            lodMetrics: [],
+            lodMetrics: null,
             exoplanetCount: 0,
             particleCount: 0,
             frameTime: [],
@@ -54,6 +54,18 @@ export class EnhancedAnalytics {
                         <div id="system-load" class="stat-value">--</div>
                     </div>
                 </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div class="stat-box">
+                        <span class="stat-label">LOD EFFICIENCY</span>
+                        <div id="lod-metrics" class="stat-value" style="font-size: 14px;">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">EXOPLANET DISCOVERY</span>
+                        <div id="exoplanet-count" class="stat-value">--</div>
+                    </div>
+                </div>
+
                 <div class="stat-box" style="margin-bottom: 15px;">
                     <span class="stat-label">PERFORMANCE TRENDS</span>
                     <canvas id="analytics-chart" width="600" height="200" style="width: 100%; height: 200px; margin-top: 10px;"></canvas>
@@ -85,6 +97,17 @@ export class EnhancedAnalytics {
         
         document.getElementById('perf-overview').textContent = `${fps.toFixed(0)} FPS`;
         document.getElementById('system-load').textContent = `${mem.toFixed(1)} MB`;
+
+        if (window.app) {
+            if (window.app.lodSystem) {
+                const lod = window.app.lodSystem.getMetrics();
+                document.getElementById('lod-metrics').textContent =
+                    `${lod.visibleObjects}/${lod.totalObjects} OBJS (H:${lod.lodLevels.high || 0}, M:${lod.lodLevels.medium || 0}, L:${lod.lodLevels.low || 0})`;
+            }
+            if (window.app.exoplanetSystem) {
+                document.getElementById('exoplanet-count').textContent = window.app.exoplanetSystem.getExoplanetCount();
+            }
+        }
         
         this.updateChart();
     }

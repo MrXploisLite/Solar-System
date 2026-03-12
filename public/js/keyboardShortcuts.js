@@ -67,4 +67,41 @@ export class KeyboardShortcuts {
         if (this.isVisible) this.hide();
         else this.show();
     }
+
+    handleKeyPress(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        const key = e.key.toLowerCase();
+        const app = window.app;
+
+        switch (key) {
+            case 'g':
+                const tour = app.guidedTours.tours.find(t => t.id === 'solar-system-overview');
+                if (tour) app.guidedTours.startTour(tour);
+                break;
+            case 'm':
+                app.missionBuilder.toggle();
+                break;
+            case 'a':
+                app.enhancedAnalytics.toggle();
+                break;
+            case 'e':
+                app.exoplanetSystem.toggleExoplanets();
+                break;
+            case 's':
+                app.particleSystems.createShootingStar();
+                break;
+            case 'r':
+                app.resetCamera();
+                break;
+            case ' ':
+                e.preventDefault();
+                app.togglePause();
+                break;
+            case '?':
+            case '/':
+                this.toggle();
+                break;
+        }
+    }
 }

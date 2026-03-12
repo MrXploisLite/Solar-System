@@ -21,7 +21,7 @@ class App {
   constructor() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000000);
-        this.timeSpeed = 1.0;
+    this.timeSpeed = 1.0;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance"
@@ -29,7 +29,6 @@ class App {
 
     this.clock = new THREE.Clock();
     this.isPaused = false;
-    this.timeSpeed = 1;
     this.realTime = new Date();
     
     // Camera animation
@@ -73,6 +72,7 @@ class App {
     };
 
     this.initManagers();
+    this.setupEventListeners();
     this.setupV3UI();
 
     window.addEventListener('resize', () => this.onWindowResize());
@@ -86,7 +86,6 @@ class App {
 
   initManagers() {
     this.webXRManager = new WebXRManager(this.scene, this.camera, this.renderer);
-    this.setupEventListeners();
     this.particleSystems = new ParticleSystems(this.scene);
     this.particleSystems.createNebula();
     this.particleSystems.createEnhancedAsteroidField();
@@ -124,6 +123,8 @@ class App {
     });
 
     document.getElementById('dock-mission').addEventListener('click', () => this.missionBuilder.toggle());
+    document.getElementById('dock-pause').addEventListener('click', () => this.togglePause());
+    document.getElementById('dock-reset').addEventListener('click', () => this.resetCamera());
     document.getElementById('dock-analytics').addEventListener('click', () => this.enhancedAnalytics.toggle());
     document.getElementById('dock-exoplanets').addEventListener('click', () => this.exoplanetSystem.toggleExoplanets());
     document.getElementById('dock-star').addEventListener('click', () => this.particleSystems.createShootingStar());
@@ -203,6 +204,18 @@ class App {
     this.cameraAnimation.endTarget.copy(targetLookAt);
   }
 
+  togglePause() {
+    this.isPaused = !this.isPaused;
+    const icon = document.querySelector('#dock-pause i');
+    if (icon) {
+      icon.className = this.isPaused ? 'fas fa-play' : 'fas fa-pause';
+    }
+  }
+
+  resetCamera() {
+    this.animateCamera(new THREE.Vector3(0, 500, 1500), new THREE.Vector3(0, 0, 0));
+  }
+
   updateCameraAnimation(delta) {
     if (!this.cameraAnimation.active) return;
     this.cameraAnimation.progress += delta / this.cameraAnimation.duration;
@@ -219,6 +232,14 @@ class App {
 
   easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  setupEventListeners() {
+    window.addEventListener('keydown', (e) => {
+      if (this.keyboardShortcuts) {
+        this.keyboardShortcuts.handleKeyPress(e);
+      }
+    });
   }
 
   updateHUD(delta) {
@@ -253,6 +274,15 @@ class App {
       this.exoplanetSystem.update(delta * this.timeSpeed);
       this.lodSystem.update(delta, this.clock.getElapsedTime());
       this.updateHUD(delta);
+
+      // Analytics Recording
+      if (this.dataVisualization && this.clock.getElapsedTime() % 0.5 < 0.02) {
+        this.dataVisualization.recordFPS(this.currentFPS);
+        this.dataVisualization.recordObjectCount(this.scene.children.length);
+        if (window.performance && window.performance.memory) {
+          this.dataVisualization.recordMemory(window.performance.memory.usedJSHeapSize / (1024 * 1024));
+        }
+      }
     }
 
     this.updateCameraAnimation(delta);

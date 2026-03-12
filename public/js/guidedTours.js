@@ -41,6 +41,28 @@ export class GuidedTours {
                         ]
                     },
                     {
+                        target: 'mercury',
+                        action: 'focus',
+                        duration: 2000,
+                        narration: 'Mercury is the smallest and innermost planet. Despite being closest to the Sun, it is not the hottest planet.',
+                        facts: [
+                            'Orbit: 88 Earth days',
+                            'Extreme temperature swings',
+                            'Iron-rich core'
+                        ]
+                    },
+                    {
+                        target: 'venus',
+                        action: 'focus',
+                        duration: 2000,
+                        narration: 'Venus is the hottest planet in our solar system, with surface temperatures hot enough to melt lead due to a runaway greenhouse effect.',
+                        facts: [
+                            'Rotates backwards (retrograde)',
+                            'Atmospheric pressure 92x Earth',
+                            'Thick sulfuric acid clouds'
+                        ]
+                    },
+                    {
                         target: 'earth',
                         action: 'focus',
                         duration: 3000,
@@ -61,6 +83,108 @@ export class GuidedTours {
                             'Thin atmosphere',
                             'Future colonization target'
                         ]
+                    },
+                    {
+                        target: 'jupiter',
+                        action: 'focus',
+                        duration: 3000,
+                        narration: 'Jupiter is the largest planet in our solar system. It is a gas giant primarily composed of hydrogen and helium.',
+                        facts: [
+                            'Great Red Spot is a 400-year storm',
+                            '79+ moons',
+                            'Powerful magnetic field'
+                        ]
+                    },
+                    {
+                        target: 'saturn',
+                        action: 'focus',
+                        duration: 3000,
+                        narration: 'Saturn is most famous for its spectacular ring system, which is made mostly of ice and rock particles.',
+                        facts: [
+                            'Least dense planet (could float in water)',
+                            'Enceladus has water geysers',
+                            'Titan has liquid methane lakes'
+                        ]
+                    },
+                    {
+                        target: 'uranus',
+                        action: 'focus',
+                        duration: 2500,
+                        narration: 'Uranus is an ice giant that rotates on its side, making it unique among planets.',
+                        facts: [
+                            'Coldest planetary atmosphere',
+                            'Faint ring system',
+                            'Discovered in 1781'
+                        ]
+                    },
+                    {
+                        target: 'neptune',
+                        action: 'focus',
+                        duration: 2500,
+                        narration: 'Neptune is the most distant major planet and has the strongest winds in the solar system.',
+                        facts: [
+                            '165 Earth years to orbit Sun',
+                            'Deep blue color from methane',
+                            'Triton moon orbits backwards'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'inner-planets',
+                name: 'Inner Rocky Worlds',
+                description: 'Explore the terrestrial planets close to the Sun',
+                duration: '8 minutes',
+                difficulty: 'Intermediate',
+                steps: [
+                    {
+                        target: 'mercury',
+                        action: 'focus',
+                        narration: 'The innermost planet, Mercury, is a world of extremes.'
+                    },
+                    {
+                        target: 'venus',
+                        action: 'focus',
+                        narration: 'Venus, often called Earth\'s twin, but with a deadly atmosphere.'
+                    },
+                    {
+                        target: 'earth',
+                        action: 'focus',
+                        narration: 'Earth, the cradle of life.'
+                    },
+                    {
+                        target: 'mars',
+                        action: 'focus',
+                        narration: 'Mars, the frontier of human exploration.'
+                    }
+                ]
+            },
+            {
+                id: 'gas-giants',
+                name: 'The Outer Giants',
+                description: 'Journey to the massive gas and ice giants',
+                duration: '10 minutes',
+                difficulty: 'Intermediate',
+                steps: [
+                    {
+                        target: 'jupiter',
+                        action: 'focus',
+                        narration: 'The king of planets, Jupiter.'
+                    },
+                    {
+                        target: 'saturn',
+                        action: 'focus',
+                        narration: 'The ringed wonder, Saturn.'
+                    },
+                    {
+                        target: 'uranus',
+                        action: 'focus',
+                        narration: 'The tilted ice giant, Uranus.'
+                    },
+                    {
+                        target: 'neptune',
+                        action: 'focus',
+                        narration: 'The windy blue world, Neptune.'
                     }
                 ]
             }
@@ -139,6 +263,7 @@ export class GuidedTours {
         if (!step.target) return;
         const planet = this.solarSystem.planets[step.target];
         if (planet && window.app) {
+            window.app.selectPlanet(step.target, planet.mesh);
             window.app.flyToPlanet(step.target, planet.mesh);
         }
     }
